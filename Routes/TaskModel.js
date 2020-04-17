@@ -8,7 +8,9 @@ module.exports = {
 }
 
 function find() {
-    return db('tasks');
+    return db('tasks as t')
+    .join('projects as p', 'p.id', '=', 't.project_id')
+    .select('t.id', 't.t_description', 't.notes', 'p.name as project', 'p.p_description')
 }
 
 function findById(id) {
@@ -16,11 +18,14 @@ function findById(id) {
 }
 
 function findTasksWithProject(id) {
+    // select t.id, t.t_description, t.notes, p.name as project, p.p_description
+    // from tasks as t
+    // inner join projects as p on p.id = t.project_id;
+
     return db('tasks as t')
-    //.join('projects as p', 't.project_id', '=', 'p.id')
-    //.select('p.name', 't.id')
-    //.select('t.id', 't.t_description', 't.notes', 't.completed', 'p.name as project_name', 'p.p_description as project_description')
-    .where({id});
+    .where({id})
+    .join('projects as p', 'p.id', '=', 't.project_id')
+    .select('t.id', 't.t_description', 't.notes', 'p.name as project', 'p.p_description');
 }
 
 function add(newTask) {
